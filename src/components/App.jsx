@@ -11,9 +11,9 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    if (localStorage.contacts !== null && localStorage.contacts !== undefined) {
-      const savedContacts = localStorage.getItem('contacts');
-      const parsContacts = JSON.parse(savedContacts);
+    const savedContacts = localStorage.getItem('contacts');
+    const parsContacts = JSON.parse(savedContacts);
+    if (parsContacts) {
       this.setState({ contacts: parsContacts });
     }
   }
@@ -22,9 +22,11 @@ export class App extends Component {
     localStorage.setItem('contacts', JSON.stringify(item));
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(_, prevState) {
     const { contacts } = this.state;
-    this.setLocalStorage([...contacts]);
+    if (this.state.contacts !== prevState.contacts) {
+      this.setLocalStorage([...contacts]);
+    }
   }
 
   onHandleSubmit = (e, { resetForm }) => {
